@@ -1,7 +1,9 @@
 <?php
 namespace Jimphle\Messaging\MessageHandler;
 
-class ApplyFilter implements \Jimphle\Messaging\MessageHandler\MessageHandler
+use Jimphle\Messaging\Message;
+
+class ApplyFilter implements MessageHandler
 {
     /**
      * @var \Jimphle\Messaging\Filter[]
@@ -9,21 +11,21 @@ class ApplyFilter implements \Jimphle\Messaging\MessageHandler\MessageHandler
     private $filters;
 
     /**
-     * @var \Jimphle\Messaging\MessageHandler\MessageHandler
+     * @var MessageHandler
      */
     private $next;
 
-    public function __construct(array $filters, \Jimphle\Messaging\MessageHandler\MessageHandler $next)
+    public function __construct(array $filters, MessageHandler $next)
     {
         $this->filters = $filters;
         $this->next = $next;
     }
 
     /**
-     * @param \Jimphle\Messaging\Message|\Jimphle\DataStructure\Map $message
-     * @return \Jimphle\Messaging\MessageHandlerResponse|\Jimphle\Messaging\Message|\Jimphle\DataStructure\Map|null
+     * @param Message|\Jimphle\DataStructure\Map $message
+     * @return \Jimphle\Messaging\MessageHandlerResponse|Message|\Jimphle\DataStructure\Map|null
      */
-    public function handle(\Jimphle\Messaging\Message $message)
+    public function handle(Message $message)
     {
         foreach ($this->filters as $filter) {
             $message = $filter->filter($message);

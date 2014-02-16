@@ -5,8 +5,9 @@
 
 Jimdo PHP library extraction of messaging component.
 
-
 The Messaging component is base on message-handler which implement the MessageHandler Interface.
+
+## Handling commands and events
 
 Let's get started with sending a command say-hello:
 ```php
@@ -89,3 +90,50 @@ Which means the messagingContext handles the SayHelloHandler iterates over the r
 events and tries to handle them as well.
 How you may have noticed the order of the printed messages is reversed to the order the printing handlers are called.
 This happens because the response of the first called message-handler is the one which is returned here.
+
+## Message-filter and message-handler annotations
+
+If you add the ApplyFilter MessageHandler to the messagingContext you add the possibility to apply filter to a message
+before passing it to the next message-handler.
+```php
+$messageFilterDefinitions = array(new SomeMessageFilter());
+$messagingContext = new HandleAllMessagesToProcess(
+    new ApplyFilter(
+        $messageFilterDefinitions,
+        new HandleMessage(
+            new MessageHandlerProvider(
+                new ArrayObject(
+                    $messageHandlerDefinitions
+                )
+            )
+        )
+    ),
+    new \Jimphle\Messaging\MessageHandler\NullHandler()
+);
+```
+
+However there are two predefined filter we can use here:
+ * The Validation filter, based on Symfony-Validation-Component
+ * The Authorization filter explained here another day
+
+## Handling messages in a PDO transaction
+
+To handle the messages in a PDO transaction we can add the TransactionalMessageHandler to the messagingContext.
+```php
+$messagingContext = new HandleAllMessagesToProcess(
+    new TransactionalMessageHandler(
+        new PDO('some-dsn'),
+        new ApplyFilter(
+            $messageFilterDefinitions,
+            new HandleMessage(
+                new MessageHandlerProvider(
+                    new ArrayObject(
+                        $messageHandlerDefinitions
+                    )
+                )
+            )
+        )
+    ),
+    new \Jimphle\Messaging\MessageHandler\NullHandler()
+);
+```
