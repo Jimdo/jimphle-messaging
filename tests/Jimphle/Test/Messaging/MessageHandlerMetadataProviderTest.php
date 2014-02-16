@@ -173,7 +173,7 @@ class MessageHandlerMetadataProviderTest extends \PHPUnit_Framework_TestCase
     private function messageHandlerProviderMock()
     {
         return $this->getMockBuilder(
-            '\Jimphle\Messaging\Plugin\Pimple\MessageHandlerProvider'
+            '\Jimphle\Messaging\MessageHandlerProvider'
         )
             ->disableOriginalConstructor()
             ->getMock();

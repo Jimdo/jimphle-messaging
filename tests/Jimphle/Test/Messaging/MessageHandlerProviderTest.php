@@ -1,8 +1,8 @@
 <?php
-namespace Jimphle\Test\Messaging\Plugin\Pimple;
+namespace Jimphle\Test\Messaging;
 
 use Jimphle\Messaging\GenericMessage;
-use Jimphle\Messaging\Plugin\Pimple\MessageHandlerProvider;
+use Jimphle\Messaging\MessageHandlerProvider;
 
 class MessageHandlerProviderTest extends \PHPUnit_Framework_TestCase
 {
@@ -11,7 +11,7 @@ class MessageHandlerProviderTest extends \PHPUnit_Framework_TestCase
     const SOME_MESSAGE_NAME = 'a_message';
 
     /**
-     * @var \Pimple
+     * @var \ArrayObject
      */
     private $serviceContainer;
 
@@ -22,7 +22,7 @@ class MessageHandlerProviderTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->serviceContainer = new \Pimple();
+        $this->serviceContainer = new \ArrayObject();
         $this->messageHandlerProvider = new MessageHandlerProvider(
             $this->serviceContainer
         );
@@ -33,13 +33,11 @@ class MessageHandlerProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldReturnAnInteractor()
     {
-        $interactor = $this->getMock('\Jimphle\Messaging\MessageHandler\MessageHandler');
-        $this->serviceContainer[self::SOME_COMMAND_NAME] = function () use ($interactor) {
-            return $interactor;
-        };
+        $messageHandler = $this->getMock('\Jimphle\Messaging\MessageHandler\MessageHandler');
+        $this->serviceContainer[self::SOME_COMMAND_NAME] = $messageHandler;
         $this->assertThat(
             $this->messageHandlerProvider->getCommandHandler(self::SOME_COMMAND_NAME),
-            $this->equalTo($interactor)
+            $this->equalTo($messageHandler)
         );
     }
 
@@ -49,9 +47,7 @@ class MessageHandlerProviderTest extends \PHPUnit_Framework_TestCase
     public function itShouldReturnACommandHandler()
     {
         $messageHandler = $this->getMock('\Jimphle\Messaging\MessageHandler\MessageHandler');
-        $this->serviceContainer[self::SOME_COMMAND_NAME] = function () use ($messageHandler) {
-            return $messageHandler;
-        };
+        $this->serviceContainer[self::SOME_COMMAND_NAME] = $messageHandler;
         $this->assertThat(
             $this->messageHandlerProvider->getCommandHandler(self::SOME_COMMAND_NAME),
             $this->equalTo($messageHandler)
@@ -64,9 +60,7 @@ class MessageHandlerProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldThrowAnExceptionIfCommandHandlerIsNotAValidMessageHandler()
     {
-        $this->serviceContainer[self::SOME_COMMAND_NAME] = function () {
-            return new \stdClass;
-        };
+        $this->serviceContainer[self::SOME_COMMAND_NAME] = new \stdClass;
         $this->messageHandlerProvider->getCommandHandler(self::SOME_COMMAND_NAME);
     }
 
@@ -76,9 +70,7 @@ class MessageHandlerProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldThrowAnExceptionIfEventHandlersAreNotAList()
     {
-        $this->serviceContainer[self::SOME_EVENT_NAME] = function () {
-            return new \stdClass;
-        };
+        $this->serviceContainer[self::SOME_EVENT_NAME] = new \stdClass;
         $this->messageHandlerProvider->getEventHandlers(self::SOME_EVENT_NAME);
     }
 
@@ -88,9 +80,7 @@ class MessageHandlerProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldThrowAnExceptionIfEventHandlerIsNotAValidMessageHandler()
     {
-        $this->serviceContainer[self::SOME_EVENT_NAME] = function () {
-            return array(new \stdClass);
-        };
+        $this->serviceContainer[self::SOME_EVENT_NAME] = array(new \stdClass);
         $this->messageHandlerProvider->getEventHandlers(self::SOME_EVENT_NAME);
     }
 
@@ -111,9 +101,7 @@ class MessageHandlerProviderTest extends \PHPUnit_Framework_TestCase
     public function itShouldReturnSomeEventHandlers()
     {
         $messageHandler = $this->getMock('\Jimphle\Messaging\MessageHandler\MessageHandler');
-        $this->serviceContainer[self::SOME_EVENT_NAME] = function () use ($messageHandler) {
-            return array($messageHandler, $messageHandler);
-        };
+        $this->serviceContainer[self::SOME_EVENT_NAME] = array($messageHandler, $messageHandler);
         $this->assertThat(
             $this->messageHandlerProvider->getEventHandlers(self::SOME_EVENT_NAME),
             $this->equalTo(array($messageHandler, $messageHandler))
