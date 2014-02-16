@@ -1,0 +1,172 @@
+<?php
+namespace Jimphle\Test\Messaging\Plugin\Authorization;
+
+use Jimphle\Messaging\Command;
+use Jimphle\Messaging\Plugin\Authorization\MessageFilter;
+
+class MessageFilterTest extends \PHPUnit_Framework_TestCase
+{
+    const SOME_MESSAGE_HANDLER_NAME = 'vlaehfjkwehf';
+    const SOME_AUTH_CONSTRAINT = 'some_auth_constraint';
+    const SOME_OTHER_AUTH_CONSTRAINT = 'some_other_auth_constraint';
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    private $metadataProvider;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    public $serviceContainer;
+
+    /**
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    public $authorizationContext;
+
+    public function setUp()
+    {
+        $this->loadMetaDataProvider();
+        $this->loadServiceContainer();
+        $this->loadAuthorizationContext();
+
+        $this->metadataProvider->expects($this->any())
+            ->method('get')
+            ->will($this->returnValue(array($this->metadataRow(), $this->anotherMetadataRow())));
+        $this->serviceContainer->expects($this->any())
+            ->method('offsetGet')
+            ->will($this->returnValue($this->authorizationConstraint()));
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldGetAuthorizationMetadataForMessage()
+    {
+        $this->loadMetaDataProvider();
+        $this->metadataProvider->expects($this->once())
+            ->method('get')
+            ->with(
+                $this->equalTo($this->someMessage()),
+                $this->equalTo(MessageFilter::ANNOTATION_CLASS)
+            )
+            ->will($this->returnValue(array($this->metadataRow())));
+
+        $this->filterMessage();
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldGetConstraintsFromServiceContainer()
+    {
+        $this->loadServiceContainer();
+        $this->serviceContainer->expects($this->at(0))
+            ->method('offsetGet')
+            ->with($this->equalTo(self::SOME_AUTH_CONSTRAINT))
+            ->will($this->returnValue($this->authorizationConstraint()));
+        $this->serviceContainer->expects($this->at(1))
+            ->method('offsetGet')
+            ->with($this->equalTo(self::SOME_OTHER_AUTH_CONSTRAINT))
+            ->will($this->returnValue($this->authorizationConstraint()));
+
+        $this->filterMessage();
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldAssertConstraintsAreValid()
+    {
+        $authorizationConstraint = $this->authorizationConstraint();
+        $anotherAuthorizationConstraint = $this->anotherAuthorizationConstraint();
+
+        $this->serviceContainer->expects($this->any())
+            ->method('offsetGet')
+            ->will(
+                $this->onConsecutiveCalls(
+                    $this->returnValue($authorizationConstraint),
+                    $this->returnValue($anotherAuthorizationConstraint)
+                )
+            );
+
+        $this->authorizationContext->expects($this->once())
+            ->method('assertAccessIsGranted')
+            ->with(
+                $this->equalTo($this->someMessage()),
+                $this->equalTo(array($authorizationConstraint, $anotherAuthorizationConstraint))
+            );
+
+        $this->filterMessage();
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldReturnTheMessagePassedIn()
+    {
+        $this->assertThat($this->filterMessage(), $this->equalTo($this->someMessage()));
+    }
+
+    private function filterMessage()
+    {
+        $filter = new MessageFilter(
+            $this->metadataProvider,
+            $this->serviceContainer,
+            $this->authorizationContext
+        );
+        return $filter->filter($this->someMessage());
+    }
+
+    private function loadMetaDataProvider()
+    {
+        $this->metadataProvider = $this->getMockBuilder(
+            '\Jimphle\Messaging\MessageHandlerMetadataProvider'
+        )
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    private function metadataRow()
+    {
+        $metadataRow = new \stdClass();
+        $metadataRow->name = self::SOME_AUTH_CONSTRAINT;
+        return $metadataRow;
+    }
+
+    private function anotherMetadataRow()
+    {
+        $metadataRow = new \stdClass();
+        $metadataRow->name = self::SOME_OTHER_AUTH_CONSTRAINT;
+        return $metadataRow;
+    }
+
+    private function loadServiceContainer()
+    {
+        $this->serviceContainer = $this->getMock('ArrayAccess');
+    }
+
+    private function authorizationConstraint()
+    {
+        return $this->getMock('\Jimphle\Messaging\Plugin\Authorization\Constraint');
+    }
+
+    private function anotherAuthorizationConstraint()
+    {
+        return $this->getMock('\Jimphle\Messaging\Plugin\Authorization\Constraint');
+    }
+
+    private function loadAuthorizationContext()
+    {
+        $this->authorizationContext = $this->getMock('\Jimphle\Messaging\Plugin\Authorization\Context');
+    }
+
+    /**
+     * @return static
+     */
+    private function someMessage()
+    {
+        return Command::generate(self::SOME_MESSAGE_HANDLER_NAME);
+    }
+}
