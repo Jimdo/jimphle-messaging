@@ -3,7 +3,7 @@ namespace Jimphle\Messaging\Plugin\Authorization;
 
 class MessageFilter implements \Jimphle\Messaging\Filter
 {
-    const ANNOTATION_CLASS = '\Jimphle\Messaging\Plugin\Authorization\ConstraintAnnotation';
+    const ANNOTATION_CLASS = 'Jimphle\Messaging\Plugin\Authorization\ConstraintAnnotation';
 
     private $metadataProvider;
 

@@ -7,8 +7,8 @@ use Symfony\Component\Validator\MetadataInterface;
 
 class MessageHandlerMetadataFactory implements MetadataFactoryInterface
 {
-    const MESSAGE_PROPERTY_ANNOTATION_CLASS = '\Jimphle\Messaging\Plugin\Validation\MessagePropertyAnnotation';
-    const MESSAGE_ANNOTATION_CLASS = '\Jimphle\Messaging\Plugin\Validation\MessageAnnotation';
+    const MESSAGE_PROPERTY_ANNOTATION_CLASS = 'Jimphle\Messaging\Plugin\Validation\MessagePropertyAnnotation';
+    const MESSAGE_ANNOTATION_CLASS = 'Jimphle\Messaging\Plugin\Validation\MessageAnnotation';
     const MESSAGE_CLASS = '\Jimphle\Messaging\Command';
 
     private $metadataProvider;
