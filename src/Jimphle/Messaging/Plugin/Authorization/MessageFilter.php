@@ -1,7 +1,11 @@
 <?php
 namespace Jimphle\Messaging\Plugin\Authorization;
 
-class MessageFilter implements \Jimphle\Messaging\Filter
+use Jimphle\Messaging\Filter;
+use Jimphle\Messaging\Message;
+use Jimphle\Messaging\MessageHandlerMetadataProvider;
+
+class MessageFilter implements Filter
 {
     const ANNOTATION_CLASS = 'Jimphle\Messaging\Plugin\Authorization\ConstraintAnnotation';
 
@@ -11,9 +15,9 @@ class MessageFilter implements \Jimphle\Messaging\Filter
     private $authorizationContext;
 
     public function __construct(
-        \Jimphle\Messaging\MessageHandlerMetadataProvider $metadataProvider,
+        MessageHandlerMetadataProvider $metadataProvider,
         \ArrayAccess $serviceContainer,
-        \Jimphle\Messaging\Plugin\Authorization\Context $authorizationContext
+        Context $authorizationContext
     ) {
         $this->metadataProvider = $metadataProvider;
         $this->serviceContainer = $serviceContainer;
@@ -21,7 +25,7 @@ class MessageFilter implements \Jimphle\Messaging\Filter
     }
 
 
-    public function filter(\Jimphle\Messaging\Message $message)
+    public function filter(Message $message)
     {
         $annotations = $this->metadataProvider->get($message, self::ANNOTATION_CLASS);
         $authConstraints = array();

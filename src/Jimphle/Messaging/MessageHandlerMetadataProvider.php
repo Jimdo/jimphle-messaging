@@ -5,24 +5,13 @@ use Doctrine\Common\Annotations\Reader;
 
 class MessageHandlerMetadataProvider
 {
-    /**
-     * @var array
-     */
     private $allowedAnnotationClasses;
-
-    /**
-     * @var Reader
-     */
     private $annotationReader;
-
-    /**
-     * @var \Jimphle\Messaging\MessageHandler\MessageHandlerProvider
-     */
     private $messageHandlerProvider;
 
     public function __construct(
         Reader $annotationReader,
-        \Jimphle\Messaging\MessageHandlerProvider $messageHandlerProvider,
+        MessageHandlerProvider $messageHandlerProvider,
         array $allowedAnnotationClasses
     ) {
         $this->annotationReader = $annotationReader;
@@ -30,7 +19,7 @@ class MessageHandlerMetadataProvider
         $this->allowedAnnotationClasses = $allowedAnnotationClasses;
     }
 
-    public function get(\Jimphle\Messaging\Message $message, $annotationClass)
+    public function get(Message $message, $annotationClass)
     {
         $this->assertAnnotationClassAllowed($annotationClass);
 
