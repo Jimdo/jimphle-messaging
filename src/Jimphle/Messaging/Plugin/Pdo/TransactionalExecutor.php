@@ -3,25 +3,23 @@ namespace Jimphle\Messaging\Plugin\Pdo;
 
 class TransactionalExecutor
 {
-    private $executable;
     private $connection;
 
-    public function __construct(\Closure $executable, \PDO $connection)
+    public function __construct(\PDO $connection)
     {
-        $this->executable = $executable;
         $this->connection = $connection;
     }
 
     /**
-     * @throws Exception
-     * @return \Jimphle\DataStructure\Map
+     * @param \Closure $executable
+     * @return mixed
+     * @throws \Exception
      */
-    public function execute()
+    public function execute(\Closure $executable)
     {
         $this->connection->beginTransaction();
         try {
-            $executableReflection = new \ReflectionFunction($this->executable);
-            $response = $executableReflection->invokeArgs(func_get_args());
+            $response = $executable();
             $this->connection->commit();
             return $response;
         } catch (\Exception $exception) {

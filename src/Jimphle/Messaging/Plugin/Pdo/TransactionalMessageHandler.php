@@ -1,35 +1,28 @@
 <?php
 namespace Jimphle\Messaging\Plugin\Pdo;
 
-class TransactionalMessageHandler implements \Jimphle\Messaging\MessageHandler\MessageHandler
+use Jimphle\Messaging\Plugin\Pdo\TransactionalExecutor;
+use Jimphle\Messaging\Message;
+use Jimphle\Messaging\MessageHandler\MessageHandler;
+
+class TransactionalMessageHandler implements MessageHandler
 {
-    private $pdo;
+    private $transactionalExecutor;
     private $next;
 
-    public function __construct(\PDO $pdo, \Jimphle\Messaging\MessageHandler\MessageHandler $next)
+    public function __construct(TransactionalExecutor $transactionalExecutor, MessageHandler $next)
     {
-        $this->pdo = $pdo;
+        $this->transactionalExecutor = $transactionalExecutor;
         $this->next = $next;
     }
 
-    /**
-     * @param \Jimphle\Messaging\Message|\Jimphle\DataStructure\Map $message
-     * @return \Jimphle\Messaging\MessageHandlerResponse|\Jimphle\Messaging\Message|\Jimphle\DataStructure\Map|null
-     */
-    public function handle(\Jimphle\Messaging\Message $message)
+    public function handle(Message $message)
     {
         $next = $this->next;
-        return $this->executeTransactional(
-            function (\Jimphle\Messaging\Message $message) use ($next) {
+        return $this->transactionalExecutor->execute(
+            function () use ($next, $message) {
                 return $next->handle($message);
-            },
-            $message
+            }
         );
-    }
-
-    private function executeTransactional(\Closure $closure, \Jimphle\Messaging\Message $message)
-    {
-        $executor = new \Jimphle\Messaging\Plugin\Pdo\TransactionalExecutor($closure, $this->pdo);
-        return $executor->execute($message);
     }
 }
