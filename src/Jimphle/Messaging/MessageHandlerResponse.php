@@ -163,4 +163,9 @@ class MessageHandlerResponse implements Message
     {
         return $this->data->count();
     }
+
+    public function toJimphleDataStructure()
+    {
+        return $this->data;
+    }
 }
