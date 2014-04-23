@@ -137,3 +137,23 @@ $messagingContext = new HandleAllMessagesToProcess(
     new \Jimphle\Messaging\MessageHandler\NullHandler()
 );
 ```
+To execute a message handler in a pdo transaction you just have to add an annotation.
+```php
+use Jimphle\Messaging\Plugin\Pdo\TransactionalAnnotation as withPdoTransaction;
+
+/**
+ * @withPdoTransaction
+ */
+class SayHelloHandler extends AbstractMessageHandler
+{
+    public function handle(Message $message)
+    {
+        return $this->response(
+            array('answer' => sprintf("Hello %s!", $message->name))
+        )
+            ->addMessageToProcessDirectly(
+                $this->event('said-hello', array('name' => 'Joscha'))
+            );
+    }
+}
+```
