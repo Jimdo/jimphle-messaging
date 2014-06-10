@@ -12,7 +12,7 @@ class GenericMessageTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldGenerateACommandFromJsonAsDefault()
     {
-        $message = GenericMessage::fromJson('{"name":"test","payload":{"some_prop":"some value"}}');
+        $message = GenericMessage::fromJson('{"name":"dummy","payload":{"some_prop":"some value"}}');
         $this->assertThat($message, $this->isInstanceOf('\Jimphle\Messaging\Command'));
     }
 
@@ -34,6 +34,7 @@ class GenericMessageTest extends \PHPUnit_Framework_TestCase
             $expectedMessageData['channel'],
             $expectedMessageData['priority']
         );
+        $expectedMessageData['createdAt'] = $message->getMessageCreatedAt();
         $this->assertThat($message->toArray(), $this->equalTo($expectedMessageData));
     }
 
@@ -42,7 +43,7 @@ class GenericMessageTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldGenerateACommandFromJson()
     {
-        $message = GenericMessage::fromJson('{"type":"command","name":"test","payload":{"some_prop":"some value"}}');
+        $message = GenericMessage::fromJson('{"type":"command","name":"dummy","payload":{"some_prop":"some value"}}');
         $this->assertThat($message, $this->isInstanceOf('\Jimphle\Messaging\Command'));
     }
 
@@ -51,7 +52,7 @@ class GenericMessageTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldGenerateAnEventFromJson()
     {
-        $message = GenericMessage::fromJson('{"type":"event","name":"test","payload":{"some_prop":"some value"}}');
+        $message = GenericMessage::fromJson('{"type":"event","name":"dummy","payload":{"some_prop":"some value"}}');
         $this->assertThat($message, $this->isInstanceOf('\Jimphle\Messaging\Event'));
     }
 
@@ -80,7 +81,7 @@ class GenericMessageTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldConvertAMessageToJson()
     {
-        $message = GenericMessage::generate('test', array('some_prop' => 'some value'));
+        $message = GenericMessage::generateDummy(array('some_prop' => 'some value'));
         $this->assertThat($message->toJson(), $this->equalTo($this->aJsonMessage('null')));
     }
 
@@ -89,7 +90,7 @@ class GenericMessageTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldConvertACommandToJson()
     {
-        $message = Command::generate('test', array('some_prop' => 'some value'));
+        $message = Command::generateDummy(array('some_prop' => 'some value'));
         $this->assertThat($message->toJson(), $this->equalTo($this->aJsonMessage('"command"')));
     }
 
@@ -98,12 +99,12 @@ class GenericMessageTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldConvertAnEventToJson()
     {
-        $message = Event::generate('test', array('some_prop' => 'some value'));
+        $message = Event::generateDummy(array('some_prop' => 'some value'));
         $this->assertThat($message->toJson(), $this->equalTo($this->aJsonMessage('"event"')));
     }
 
     private function aJsonMessage($type, $channel = 'null', $priority = 'null')
     {
-        return '{"type":' . $type . ',"name":"test","payload":{"some_prop":"some value"},"channel":' . $channel . ',"priority":' . $priority . '}';
+        return '{"type":' . $type . ',"createdAt":"2014-06-10 10:58:57","name":"dummy","payload":{"some_prop":"some value"},"channel":' . $channel . ',"priority":' . $priority . '}';
     }
 }

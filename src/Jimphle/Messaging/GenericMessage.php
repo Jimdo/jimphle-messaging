@@ -3,16 +3,20 @@ namespace Jimphle\Messaging;
 
 use Jimphle\DataStructure\BaseInterface;
 use Jimphle\DataStructure\Map;
+use Jimphle\Messaging\Command;
+use Jimphle\Messaging\Event;
 
 class GenericMessage implements Message
 {
+    private $createdAt;
     private $name;
     private $payload;
     private $channel;
     private $priority;
 
-    public function __construct($name, Map $payload, $channel = null, $priority = null)
+    protected function __construct($createdAt, $name, Map $payload, $channel = null, $priority = null)
     {
+        $this->createdAt = $createdAt;
         $this->name = $name;
         $this->payload = $payload;
         $this->channel = $channel;
@@ -25,7 +29,7 @@ class GenericMessage implements Message
      */
     public static function generateDummy(array $payload = array())
     {
-        return static::generate('', $payload);
+        return new static('2014-06-10 10:58:57', 'dummy', new Map($payload));
     }
 
     /**
@@ -37,7 +41,8 @@ class GenericMessage implements Message
      */
     public static function generate($name, array $payload = array(), $channel = null, $priority = null)
     {
-        return new static($name, new Map($payload), $channel, $priority);
+        $createdAt = new \DateTime('now', new \DateTimeZone('UTC'));
+        return new static($createdAt->format('Y-m-d H:i:s'), $name, new Map($payload), $channel, $priority);
     }
 
     public static function fromJson($json)
@@ -46,6 +51,10 @@ class GenericMessage implements Message
         $type = null;
         if (isset($data['type'])) {
             $type = $data['type'];
+        }
+        $createdAt = null;
+        if (isset($data['createdAt'])) {
+            $createdAt = $data['createdAt'];
         }
         $channel = null;
         if (isset($data['channel'])) {
@@ -57,9 +66,9 @@ class GenericMessage implements Message
         }
         switch($type) {
             case self::TYPE_EVENT:
-                return \Jimphle\Messaging\Event::generate($data['name'], $data['payload'], $channel, $priority);
+                return new Event($createdAt, $data['name'], new Map($data['payload']), $channel, $priority);
             default:
-                return \Jimphle\Messaging\Command::generate($data['name'], $data['payload'], $channel, $priority);
+                return new Command($createdAt, $data['name'], new Map($data['payload']), $channel, $priority);
         }
     }
 
@@ -87,13 +96,14 @@ class GenericMessage implements Message
      */
     public function merge(BaseInterface $other)
     {
-        return new static($this->getMessageName(), $this->payload->merge($other));
+        return new static($this->getMessageCreatedAt(), $this->getMessageName(), $this->payload->merge($other));
     }
 
     public function toArray()
     {
         $data = array(
             'type' => $this->getMessageType(),
+            'createdAt' => $this->getMessageCreatedAt(),
             'name' => $this->getMessageName(),
             'payload' => $this->payload->toArray(),
             'channel' => $this->getMessageChannel(),
@@ -168,5 +178,10 @@ class GenericMessage implements Message
     public function offsetUnset($offset)
     {
         $this->payload->__unset($offset);
+    }
+
+    public function getMessageCreatedAt()
+    {
+        return $this->createdAt;
     }
 }

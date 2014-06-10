@@ -168,4 +168,8 @@ class MessageHandlerResponse implements Message
     {
         return $this->data;
     }
+
+    public function getMessageCreatedAt()
+    {
+    }
 }

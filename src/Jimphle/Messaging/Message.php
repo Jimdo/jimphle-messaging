@@ -27,4 +27,9 @@ interface Message extends BaseInterface
      * @return null|string
      */
     public function getMessageChannel();
+
+    /**
+     * @return null|string
+     */
+    public function getMessageCreatedAt();
 }
