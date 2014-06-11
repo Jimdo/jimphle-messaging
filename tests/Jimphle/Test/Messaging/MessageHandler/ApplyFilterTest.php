@@ -86,7 +86,7 @@ class ApplyFilterTest extends \PHPUnit_Framework_TestCase
 
     private function message()
     {
-        return GenericMessage::generate('blaa', array());
+        return GenericMessage::generateDummy();
     }
 
     private function messageHandlerMock()

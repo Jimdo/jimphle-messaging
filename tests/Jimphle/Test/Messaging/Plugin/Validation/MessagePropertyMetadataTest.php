@@ -38,6 +38,6 @@ class MessagePropertyMetadataTest extends \PHPUnit_Framework_TestCase
     private function getPropertyValue($class = self::MESSAGE_HANDLER_CLASS, $name = 'name')
     {
         $metadata = new MessagePropertyMetadata($class, $name);
-        return $metadata->getPropertyValue(Command::generate('blaa', array('name' => self::SOME_NAME)));
+        return $metadata->getPropertyValue(Command::generateDummy(array('name' => self::SOME_NAME)));
     }
 }

@@ -2,6 +2,7 @@
 namespace Jimphle\Test\Messaging\Plugin\Authorization;
 
 use Jimphle\Messaging\Command;
+use Jimphle\Messaging\Message;
 use Jimphle\Messaging\Plugin\Authorization\MessageFilter;
 
 class MessageFilterTest extends \PHPUnit_Framework_TestCase
@@ -48,7 +49,11 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
         $this->metadataProvider->expects($this->once())
             ->method('get')
             ->with(
-                $this->equalTo($this->someMessage()),
+                $this->callback(
+                    function (Message $message) {
+                        return $message->equals(Command::generate(self::SOME_MESSAGE_HANDLER_NAME));
+                    }
+                ),
                 $this->equalTo(MessageFilter::ANNOTATION_CLASS)
             )
             ->will($this->returnValue(array($this->metadataRow())));
@@ -94,7 +99,11 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
         $this->authorizationContext->expects($this->once())
             ->method('assertAccessIsGranted')
             ->with(
-                $this->equalTo($this->someMessage()),
+                $this->callback(
+                    function (Message $message) {
+                        return $message->equals(Command::generate(self::SOME_MESSAGE_HANDLER_NAME));
+                    }
+                ),
                 $this->equalTo(array($authorizationConstraint, $anotherAuthorizationConstraint))
             );
 
@@ -106,7 +115,7 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldReturnTheMessagePassedIn()
     {
-        $this->assertThat($this->filterMessage(), $this->equalTo($this->someMessage()));
+        $this->assertThat(Command::generate(self::SOME_MESSAGE_HANDLER_NAME)->equals($this->filterMessage()), $this->isTrue());
     }
 
     private function filterMessage()
@@ -116,7 +125,7 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
             $this->serviceContainer,
             $this->authorizationContext
         );
-        return $filter->filter($this->someMessage());
+        return $filter->filter(Command::generate(self::SOME_MESSAGE_HANDLER_NAME));
     }
 
     private function loadMetaDataProvider()
@@ -160,13 +169,5 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
     private function loadAuthorizationContext()
     {
         $this->authorizationContext = $this->getMock('\Jimphle\Messaging\Plugin\Authorization\Context');
-    }
-
-    /**
-     * @return static
-     */
-    private function someMessage()
-    {
-        return Command::generate(self::SOME_MESSAGE_HANDLER_NAME);
     }
 }

@@ -2,6 +2,7 @@
 namespace Jimphle\Test\Messaging;
 
 use Jimphle\Messaging\GenericMessage;
+use Jimphle\Messaging\Message;
 use Jimphle\Messaging\MessageHandlerMetadataProvider;
 
 class MessageHandlerMetadataProviderTest extends \PHPUnit_Framework_TestCase
@@ -44,7 +45,13 @@ class MessageHandlerMetadataProviderTest extends \PHPUnit_Framework_TestCase
         $this->messageHandlerProvider = $this->messageHandlerProviderMock();
         $this->messageHandlerProvider->expects($this->once())
             ->method('getMessageHandlers')
-            ->with($this->equalTo($this->someMessage()))
+            ->with(
+                $this->callback(
+                    function (Message $message) {
+                        return $message->equals($this->someMessage());
+                    }
+                )
+            )
             ->will($this->returnValue(array($this->messageHandlerFake)));
         $this->reader->expects($this->any())
             ->method('getClassAnnotations')

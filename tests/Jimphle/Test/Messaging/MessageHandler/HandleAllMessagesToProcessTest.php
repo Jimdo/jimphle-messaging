@@ -32,12 +32,13 @@ class HandleAllMessagesToProcessTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldHandleTheMessageDirectly()
     {
+        $someMessage = $this->someMessage();
         $this->directMessageHandlerMock->expects($this->once())
             ->method('handle')
-            ->with($this->equalTo($this->someMessage()))
+            ->with($this->equalTo($someMessage))
             ->will($this->returnValue(new Map()));
 
-        $this->handleMessage($this->someMessage());
+        $this->handleMessage($someMessage);
     }
 
     /**

@@ -35,7 +35,7 @@ class MessageHandlerResponseTest extends \PHPUnit_Framework_TestCase
 
     private function someMessage()
     {
-        $event = GenericMessage::generate('bla');
+        $event = GenericMessage::generateDummy();
         return $event;
     }
 }

@@ -30,11 +30,12 @@ class HandleMessageTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldGetMessageHandlersFromProvider()
     {
+        $someMessage = $this->someMessage();
         $this->messageHandlerProvider->expects($this->once())
             ->method('getMessageHandlers')
-            ->with($this->equalTo($this->someMessage()))
+            ->with($this->equalTo($someMessage))
             ->will($this->returnValue(array($this->messageHandlerMock())));
-        $this->handleMessage($this->someMessage());
+        $this->handleMessage($someMessage);
     }
 
     /**
