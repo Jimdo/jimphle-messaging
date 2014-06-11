@@ -8,7 +8,7 @@ interface MessageHandler
 {
     /**
      * @param Message|\Jimphle\DataStructure\Map $message
-     * @return MessageHandlerResponse|Message|\Jimphle\DataStructure\Map|null
+     * @return \Jimphle\Messaging\MessageHandlerResponse|\Jimphle\Messaging\Message|\Jimphle\DataStructure\Map|null
      */
     public function handle(Message $message);
 }

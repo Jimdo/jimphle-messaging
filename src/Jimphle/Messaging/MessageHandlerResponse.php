@@ -14,12 +14,12 @@ class MessageHandlerResponse implements Message
     private $data;
 
     /**
-     * @var Message
+     * @var Message[]
      */
     private $messagesToProcessDirectly = array();
 
     /**
-     * @var Message
+     * @var Message[]
      */
     private $messagesToProcessInBackground = array();
 
