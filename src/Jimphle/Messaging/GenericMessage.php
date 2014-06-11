@@ -184,4 +184,13 @@ class GenericMessage implements Message
     {
         return $this->createdAt;
     }
+
+    public function equals(Message $someMessage)
+    {
+        return $this->getMessageType() == $someMessage->getMessageType()
+            && $this->getMessageName() == $someMessage->getMessageName()
+            && $this->getPayload() == $someMessage->getPayload()
+            && $this->getMessageChannel() == $someMessage->getMessageChannel()
+            && $this->getMessagePriority() == $someMessage->getMessagePriority();
+    }
 }

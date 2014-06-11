@@ -32,4 +32,10 @@ interface Message extends BaseInterface
      * @return null|string
      */
     public function getMessageCreatedAt();
+
+    /**
+     * @param Message $someMessage
+     * @return bool
+     */
+    public function equals(Message $someMessage);
 }

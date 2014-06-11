@@ -172,4 +172,9 @@ class MessageHandlerResponse implements Message
     public function getMessageCreatedAt()
     {
     }
+
+    public function equals(Message $someMessage)
+    {
+        throw new \BadMethodCallException('not implemented yet');
+    }
 }
