@@ -51,7 +51,7 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
             ->with(
                 $this->callback(
                     function (Message $message) {
-                        return $message->equals(Command::generate(self::SOME_MESSAGE_HANDLER_NAME));
+                        return $message->equals(Command::generate(MessageFilterTest::SOME_MESSAGE_HANDLER_NAME));
                     }
                 ),
                 $this->equalTo(MessageFilter::ANNOTATION_CLASS)
@@ -101,7 +101,7 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
             ->with(
                 $this->callback(
                     function (Message $message) {
-                        return $message->equals(Command::generate(self::SOME_MESSAGE_HANDLER_NAME));
+                        return $message->equals(Command::generate(MessageFilterTest::SOME_MESSAGE_HANDLER_NAME));
                     }
                 ),
                 $this->equalTo(array($authorizationConstraint, $anotherAuthorizationConstraint))

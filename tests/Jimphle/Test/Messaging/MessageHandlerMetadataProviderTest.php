@@ -48,7 +48,7 @@ class MessageHandlerMetadataProviderTest extends \PHPUnit_Framework_TestCase
             ->with(
                 $this->callback(
                     function (Message $message) {
-                        return $message->equals(GenericMessage::generate(self::SOME_MESSAGE_NAME));
+                        return $message->equals(GenericMessage::generate(MessageHandlerMetadataProviderTest::SOME_MESSAGE_NAME));
                     }
                 )
             )
