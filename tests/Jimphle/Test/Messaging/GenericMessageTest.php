@@ -103,6 +103,54 @@ class GenericMessageTest extends \PHPUnit_Framework_TestCase
         $this->assertThat($message->toJson(), $this->equalTo($this->aJsonMessage('"event"')));
     }
 
+    /**
+     * @test
+     */
+    public function itShouldBeEqualEvenIfTheCreatedAtFieldVaries()
+    {
+        $this->assertThat(Command::generateDummy()->equals(Command::generate('dummy')), $this->isTrue());
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldBeNotEqualIfTheTypeVaries()
+    {
+        $this->assertThat(Event::generateDummy()->equals(Command::generateDummy()), $this->isFalse());
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldBeNotEqualIfTheNameVaries()
+    {
+        $this->assertThat(Command::generateDummy()->equals(Command::generate('another dummy')), $this->isFalse());
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldBeNotEqualIfThePayloadVaries()
+    {
+        $this->assertThat(Command::generateDummy(array('foo' => 'bar'))->equals(Command::generateDummy()), $this->isFalse());
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldBeNotEqualIfTheChannelVaries()
+    {
+        $this->assertThat(Command::generate('foo', array(), 'someChannel')->equals(Command::generate('foo')), $this->isFalse());
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldBeNotEqualIfThePriorityVaries()
+    {
+        $this->assertThat(Command::generate('foo', array(), null, 1)->equals(Command::generate('foo')), $this->isFalse());
+    }
+
     private function aJsonMessage($type, $channel = 'null', $priority = 'null')
     {
         return '{"type":' . $type . ',"createdAt":"2014-06-10 10:58:57","name":"dummy","payload":{"some_prop":"some value"},"channel":' . $channel . ',"priority":' . $priority . '}';
