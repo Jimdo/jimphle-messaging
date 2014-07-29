@@ -135,7 +135,7 @@ class MessageHandlerResponse implements Message
 
     public function merge(BaseInterface $other)
     {
-        return $this->data->merge($other);
+        return new static($this->data->merge($other));
     }
 
     public function getPayload()
