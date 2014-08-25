@@ -20,11 +20,10 @@ class MessagePropertyMetadataTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Symfony\Component\Validator\Exception\ValidatorException
      */
-    public function itShouldThrowAnExceptionIfPropertyDoesNotExistsOnObject()
+    public function itShouldReturnNullIfPropertyDoesNotExistsOnObject()
     {
-        $this->getPropertyValue(self::MESSAGE_HANDLER_CLASS, 'foo');
+        $this->assertThat($this->getPropertyValue(self::MESSAGE_HANDLER_CLASS, 'foo'), $this->isNull());
     }
 
     /**

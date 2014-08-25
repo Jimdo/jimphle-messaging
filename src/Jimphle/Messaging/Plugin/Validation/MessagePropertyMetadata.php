@@ -25,13 +25,7 @@ class MessagePropertyMetadata extends PropertyMetadata
             throw new ValidatorException(sprintf('Object is not of type %s', $this->class));
         }
         if (!isset($object->{$this->name})) {
-            throw new ValidatorException(
-                sprintf(
-                    'Property "%s" does not exist in object: %s',
-                    $this->name,
-                    (string)$object
-                )
-            );
+            return null;
         }
         return $object->{$this->name};
     }
