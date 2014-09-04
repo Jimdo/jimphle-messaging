@@ -13,6 +13,7 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
     const SOME_MESSAGE = 'sine blbfjkvhfdjsk';
     const SOME_FAKE_UUID = 'hihi-fake-hihi-hihi';
     const SOME_MESSAGE_TEMPLATE = 'some_message_template';
+    const SOME_CODE = 'some_code_for_message';
 
     private $constraintViolationCodeMap;
 
@@ -48,7 +49,7 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException Jimphle\Exception\ValidationFailedException
+     * @expectedException \Jimphle\Exception\ValidationFailedException
      */
     public function itShouldThrowAnValidationExceptionIfValidationFails()
     {
@@ -72,8 +73,8 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
                 $this->returnValue(
                     new ConstraintViolationList(
                         array(
-                            $this->constraintViolation(),
-                            $this->constraintViolation()
+                            $this->constraintViolationWithCode(),
+                            $this->constraintViolationWithCode()
                         )
                     )
                 )
@@ -101,7 +102,7 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
             ->method('validate')
             ->will(
                 $this->returnValue(
-                    new ConstraintViolationList(array($this->constraintViolation()))
+                    new ConstraintViolationList(array($this->constraintViolationWithoutCode()))
                 )
             );
         $this->constraintViolationCodeMap = array();
@@ -147,7 +148,25 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
         return $filter->filter($this->someMessage());
     }
 
-    private function constraintViolation()
+    private function constraintViolationWithCode()
+    {
+        $constraintViolation = $this->getMock('\Symfony\Component\Validator\ConstraintViolationInterface');
+        $constraintViolation->expects($this->any())->method('getPropertyPath')->will(
+            $this->returnValue(self::SOME_PROPERTY)
+        );
+        $constraintViolation->expects($this->any())
+            ->method('getMessage')
+            ->will($this->returnValue(self::SOME_MESSAGE));
+        $constraintViolation->expects($this->any())
+            ->method('getCode')
+            ->will($this->returnValue(self::SOME_CODE));
+        $constraintViolation->expects($this->any())->method('getMessageTemplate')->will(
+            $this->returnValue(self::SOME_MESSAGE_TEMPLATE)
+        );
+        return $constraintViolation;
+    }
+
+    private function constraintViolationWithoutCode()
     {
         $constraintViolation = $this->getMock('\Symfony\Component\Validator\ConstraintViolationInterface');
         $constraintViolation->expects($this->any())->method('getPropertyPath')->will(
@@ -169,7 +188,7 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             'property' => self::SOME_PROPERTY,
-            'code' => null,
+            'code' => self::SOME_CODE,
             'message' => self::SOME_MESSAGE
         );
     }

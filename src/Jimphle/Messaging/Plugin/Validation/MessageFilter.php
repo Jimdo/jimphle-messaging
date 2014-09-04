@@ -37,7 +37,7 @@ class MessageFilter implements Filter
                  */
                 $errors[] = array(
                     'property' => $constraintViolation->getPropertyPath(),
-                    'code' => null,
+                    'code' => $constraintViolation->getCode(),
                     'message' => $constraintViolation->getMessage()
                 );
             }
