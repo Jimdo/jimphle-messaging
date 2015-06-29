@@ -36,11 +36,14 @@ class MessageHandlerMetadataFactoryTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Jimphle\Exception\RuntimeException
      */
-    public function itShouldThrowAnExceptionIfObjectIsNotAMessage()
+    public function itShouldOnlyCollectMetadataFromJimphleMessages()
     {
-        $this->getMetadataFor(new \stdClass);
+        $messageMetadata = new MessageMetadata('\Jimphle\Messaging\Command');
+        $this->assertThat(
+            $this->getMetadataFor(new \stdClass()),
+            $this->equalTo($messageMetadata)
+        );
     }
 
     /**

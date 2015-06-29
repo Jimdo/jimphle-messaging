@@ -33,16 +33,12 @@ class MessageHandlerMetadataFactory implements MetadataFactoryInterface
      */
     public function getMetadataFor($value)
     {
-        if (!$value instanceof \Jimphle\Messaging\Message) {
-            throw new \Jimphle\Exception\RuntimeException(
-                sprintf("Cannot get metadata for '%s'", var_export($value, true))
-            );
-        }
-
         $messageMetadata = new \Jimphle\Messaging\Plugin\Validation\MessageMetadata(self::MESSAGE_CLASS);
 
-        $this->addPropertyConstraintsFromMessagePropertyAnnotations($value, $messageMetadata);
-        $this->addPropertyConstraintsFromMessageAnnotations($value, $messageMetadata);
+        if ($value instanceof \Jimphle\Messaging\Message) {
+            $this->addPropertyConstraintsFromMessagePropertyAnnotations($value, $messageMetadata);
+            $this->addPropertyConstraintsFromMessageAnnotations($value, $messageMetadata);
+        }
 
         return $messageMetadata;
     }
