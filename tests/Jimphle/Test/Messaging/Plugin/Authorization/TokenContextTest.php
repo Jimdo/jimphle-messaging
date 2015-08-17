@@ -148,6 +148,10 @@ class TokenContextTest extends \PHPUnit_Framework_TestCase
             $this->authorizationContext->getToken(),
             $this->equalTo($this->websiteUserToken())
         );
+        $this->assertThat(
+            $this->authorizationContext->isSuperUser(),
+            $this->isFalse()
+        );
     }
 
     /**
@@ -165,6 +169,10 @@ class TokenContextTest extends \PHPUnit_Framework_TestCase
         $this->assertThat(
             $this->authorizationContext->getToken(),
             $this->equalTo($this->superUserToken())
+        );
+        $this->assertThat(
+            $this->authorizationContext->isSuperUser(),
+            $this->isTrue()
         );
     }
 
