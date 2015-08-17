@@ -38,4 +38,9 @@ interface Message extends BaseInterface
      * @return bool
      */
     public function equals(Message $someMessage);
+
+    /**
+     * @return Map
+     */
+    public function toJimphleDataStructure();
 }

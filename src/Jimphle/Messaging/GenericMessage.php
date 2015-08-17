@@ -193,4 +193,9 @@ class GenericMessage implements Message
             && $this->getMessageChannel() == $someMessage->getMessageChannel()
             && $this->getMessagePriority() == $someMessage->getMessagePriority();
     }
+
+    public function toJimphleDataStructure()
+    {
+        return $this->payload;
+    }
 }
