@@ -24,7 +24,7 @@ class TokenContext implements \Jimphle\Messaging\Plugin\Authorization\Context
             throw new \Jimphle\Exception\InvalidRequestException('no access token set');
         }
 
-        if (count($constraints) == 0 || $this->token->role == self::SUPER_USER) {
+        if (count($constraints) == 0 || $this->isSuperUser()) {
             return null;
         }
 
@@ -86,5 +86,13 @@ class TokenContext implements \Jimphle\Messaging\Plugin\Authorization\Context
     public function setToken(\Jimphle\DataStructure\Map $token)
     {
         $this->token = $token;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSuperUser()
+    {
+        return $this->token->role == self::SUPER_USER;
     }
 }
