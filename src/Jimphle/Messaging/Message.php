@@ -2,6 +2,7 @@
 namespace Jimphle\Messaging;
 
 use Jimphle\DataStructure\BaseInterface;
+use Jimphle\DataStructure\Map;
 
 interface Message extends BaseInterface
 {
