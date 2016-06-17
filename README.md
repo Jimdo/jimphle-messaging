@@ -50,7 +50,7 @@ To make our messagingContext to be able to handle this kind of messages we have 
 use Jimphle\Example\MessageHandler\BeObsceneHandler;
 use Jimphle\Example\MessageHandler\SayHelloHandler;
 
-use Jimphle\Messaging\MessageHandler\HandleAllMessagesToProcess;
+use Jimphle\Messaging\MessageHandler\HandleMessagesToProcessDirectly;
 use Jimphle\Messaging\MessageHandler\HandleMessage;
 use Jimphle\Messaging\MessageHandlerProvider;
 use Jimphle\Messaging\Command;
@@ -61,15 +61,14 @@ $messageHandlerDefinitions = array(
         new BeObsceneHandler()
     )
 );
-$messagingContext = new HandleAllMessagesToProcess(
+$messagingContext = new HandleMessagesToProcessDirectly(
     new HandleMessage(
         new MessageHandlerProvider(
             new ArrayObject(
                 $messageHandlerDefinitions
             )
         )
-    ),
-    new \Jimphle\Messaging\MessageHandler\NullHandler()
+    )
 );
 
 $response = $messagingContext->handle(
@@ -97,7 +96,7 @@ If you add the ApplyFilter MessageHandler to the messagingContext you add the po
 before passing it to the next message-handler.
 ```php
 $messageFilterDefinitions = array(new SomeMessageFilter());
-$messagingContext = new HandleAllMessagesToProcess(
+$messagingContext = new HandleMessagesToProcessDirectly(
     new ApplyFilter(
         $messageFilterDefinitions,
         new HandleMessage(
@@ -107,8 +106,7 @@ $messagingContext = new HandleAllMessagesToProcess(
                 )
             )
         )
-    ),
-    new \Jimphle\Messaging\MessageHandler\NullHandler()
+    )
 );
 ```
 
@@ -120,7 +118,7 @@ However there are two predefined filter we can use here:
 
 To handle the messages in a PDO transaction we can add the TransactionalMessageHandler to the messagingContext.
 ```php
-$messagingContext = new HandleAllMessagesToProcess(
+$messagingContext = new HandleMessagesToProcessDirectly(
     new TransactionalMessageHandler(
         new PDO('some-dsn'),
         new ApplyFilter(
@@ -133,8 +131,7 @@ $messagingContext = new HandleAllMessagesToProcess(
                 )
             )
         )
-    ),
-    new \Jimphle\Messaging\MessageHandler\NullHandler()
+    )
 );
 ```
 To execute a message handler in a pdo transaction you just have to add an annotation.
