@@ -4,10 +4,11 @@ namespace Jimphle\Test\Messaging\MessageHandler;
 use Jimphle\DataStructure\Map;
 use Jimphle\Messaging\GenericMessage;
 use Jimphle\Messaging\Message;
-use Jimphle\Messaging\MessageHandler\HandleAllMessagesToProcess;
+use Jimphle\Messaging\MessageHandler\HandleMessagesToProcessDirectly;
+use Jimphle\Messaging\MessageHandler\HandleMessagesToProcessInBackground;
 use Jimphle\Messaging\MessageHandlerResponse;
 
-class HandleAllMessagesToProcessTest extends \PHPUnit_Framework_TestCase
+class HandleMessagesToProcessInBackgroundTest extends \PHPUnit_Framework_TestCase
 {
     const TEST_NAME = 'test_name';
 
@@ -44,18 +45,13 @@ class HandleAllMessagesToProcessTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function itShouldReturnTheFirstResponse()
+    public function itShouldForwardResponse()
     {
-        $secondMessage = $this->someMessage('fooo');
         $response = $this->messageHandlerResponse();
-        $response->addMessageToProcessDirectly($secondMessage);
 
-        $this->directMessageHandlerMock->expects($this->at(0))
+        $this->directMessageHandlerMock->expects($this->once())
             ->method('handle')
             ->will($this->returnValue($response));
-        $this->directMessageHandlerMock->expects($this->at(1))
-            ->method('handle')
-            ->will($this->returnValue($secondMessage));
 
         $this->assertThat(
             $this->handleMessage($this->someMessage()),
@@ -66,71 +62,23 @@ class HandleAllMessagesToProcessTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function itShouldHandleMessagesToProcessDirectly()
+    public function itShouldHandleMessagesToProcessInBackground()
     {
         $firstMessage = $this->someMessage('first');
         $secondMessage = $this->someMessage('second');
-        $thirdMessage = $this->someMessage('third');
-        $fourthMessage = $this->someMessage('fourth');
         $firstResponse = $this->messageHandlerResponse();
-        $firstResponse->addMessageToProcessDirectly($secondMessage);
-        $firstResponse->addMessageToProcessDirectly($thirdMessage);
-        $secondResponse = $this->messageHandlerResponse();
-        $secondResponse->addMessageToProcessDirectly($fourthMessage);
+        $firstResponse->addMessageToProcessInBackground($secondMessage);
 
         $this->directMessageHandlerMock = $this->messageHandlerMock();
         $this->directMessageHandlerMock->expects($this->at(0))
             ->method('handle')
             ->with($this->equalTo($firstMessage))
             ->will($this->returnValue($firstResponse));
-        $this->directMessageHandlerMock->expects($this->at(1))
-            ->method('handle')
-            ->with($this->equalTo($secondMessage))
-            ->will($this->returnValue($secondResponse));
-        $this->directMessageHandlerMock->expects($this->at(2))
-            ->method('handle')
-            ->with($this->equalTo($fourthMessage))
-            ->will($this->returnValue(new Map()));
-        $this->directMessageHandlerMock->expects($this->at(3))
-            ->method('handle')
-            ->with($this->equalTo($thirdMessage))
-            ->will($this->returnValue(new Map()));
-
-        $this->handleMessage($firstMessage);
-    }
-
-    /**
-     * @test
-     */
-    public function itShouldHandleMessagesToProcessInBackgroundToo()
-    {
-        $firstMessage = $this->someMessage('first');
-        $secondMessage = $this->someMessage('second');
-        $thirdMessage = $this->someMessage('third');
-        $fourthMessage = $this->someMessage('fourth');
-        $firstResponse = $this->messageHandlerResponse();
-        $firstResponse->addMessageToProcessDirectly($secondMessage);
-        $firstResponse->addMessageToProcessInBackground($thirdMessage);
-        $secondResponse = $this->messageHandlerResponse();
-        $secondResponse->addMessageToProcessInBackground($fourthMessage);
-
-        $this->directMessageHandlerMock = $this->messageHandlerMock();
-        $this->directMessageHandlerMock->expects($this->at(0))
-            ->method('handle')
-            ->with($this->equalTo($firstMessage))
-            ->will($this->returnValue($firstResponse));
-        $this->directMessageHandlerMock->expects($this->at(1))
-            ->method('handle')
-            ->with($this->equalTo($secondMessage))
-            ->will($this->returnValue($secondResponse));
 
         $this->backgroundMessageHandlerMock = $this->messageHandlerMock();
         $this->backgroundMessageHandlerMock->expects($this->at(0))
             ->method('handle')
-            ->with($this->equalTo($thirdMessage));
-        $this->backgroundMessageHandlerMock->expects($this->at(1))
-            ->method('handle')
-            ->with($this->equalTo($fourthMessage));
+            ->with($this->equalTo($secondMessage));
 
         $this->handleMessage($firstMessage);
     }
@@ -142,17 +90,12 @@ class HandleAllMessagesToProcessTest extends \PHPUnit_Framework_TestCase
     {
         $firstMessage = $this->someMessage('first');
         $secondMessage = $this->someMessage('second');
-        $thirdMessage = $this->someMessage('third');
 
         $response = $this->messageHandlerResponse();
-        $response->addMessageToProcessDirectly($secondMessage);
-        $response->addMessageToProcessInBackground($thirdMessage);
+        $response->addMessageToProcessInBackground($secondMessage);
 
         $this->directMessageHandlerMock = $this->messageHandlerMock();
-        $this->directMessageHandlerMock->expects($this->at(0))
-            ->method('handle')
-            ->will($this->returnValue($response));
-        $this->directMessageHandlerMock->expects($this->at(1))
+        $this->directMessageHandlerMock->expects($this->once())
             ->method('handle')
             ->will($this->throwException(new \LogicException()));
 
@@ -176,7 +119,7 @@ class HandleAllMessagesToProcessTest extends \PHPUnit_Framework_TestCase
 
     private function handleMessage(Message $event)
     {
-        $messageHandler = new HandleAllMessagesToProcess(
+        $messageHandler = new HandleMessagesToProcessInBackground(
             $this->directMessageHandlerMock,
             $this->backgroundMessageHandlerMock
         );
