@@ -95,4 +95,13 @@ class TokenContext implements \Jimphle\Messaging\Plugin\Authorization\Context
     {
         return $this->token->role == self::SUPER_USER;
     }
+
+    /**
+     * @param string $id
+     * @return bool
+     */
+    public function isClient($id)
+    {
+        return $this->token->clientId == $id;
+    }
 }
