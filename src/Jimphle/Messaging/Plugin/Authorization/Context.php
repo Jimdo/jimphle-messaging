@@ -16,4 +16,10 @@ interface Context
      * @return bool
      */
     public function isSuperUser();
+
+    /**
+     * @param string $id
+     * @return bool
+     */
+    public function isClient($id);
 }
