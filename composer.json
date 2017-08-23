@@ -5,7 +5,7 @@
     "keywords": ["messaging", "message-handler", "event-handler", "command-handler"],
     "homepage": "https://github.com/Jimdo/jimphle-messaging",
     "require": {
-        "php": ">=5.3.0",
+        "php": ">=5.6.0",
         "jimphle/data-structure": ">=0.5.0"
     },
     "require-dev": {
