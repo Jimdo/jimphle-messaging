@@ -1,9 +1,11 @@
 <?php
+
 namespace Jimphle\Messaging\Plugin\Validation;
 
-use Symfony\Component\Validator\Exception;
-use Symfony\Component\Validator\MetadataFactoryInterface;
-use Symfony\Component\Validator\MetadataInterface;
+use Jimphle\Messaging\Message;
+use Jimphle\Messaging\MessageHandlerMetadataProvider;
+use Symfony\Component\Validator\Mapping\Factory\MetadataFactoryInterface;
+use Symfony\Component\Validator\Mapping\MetadataInterface;
 
 class MessageHandlerMetadataFactory implements MetadataFactoryInterface
 {
@@ -15,9 +17,10 @@ class MessageHandlerMetadataFactory implements MetadataFactoryInterface
     private $serviceContainer;
 
     public function __construct(
-        \Jimphle\Messaging\MessageHandlerMetadataProvider $metadataProvider,
+        MessageHandlerMetadataProvider $metadataProvider,
         \ArrayAccess $serviceContainer
-    ) {
+    )
+    {
         $this->metadataProvider = $metadataProvider;
         $this->serviceContainer = $serviceContainer;
     }
@@ -33,9 +36,9 @@ class MessageHandlerMetadataFactory implements MetadataFactoryInterface
      */
     public function getMetadataFor($value)
     {
-        $messageMetadata = new \Jimphle\Messaging\Plugin\Validation\MessageMetadata(self::MESSAGE_CLASS);
+        $messageMetadata = new MessageMetadata(self::MESSAGE_CLASS);
 
-        if ($value instanceof \Jimphle\Messaging\Message) {
+        if ($value instanceof Message) {
             $this->addPropertyConstraintsFromMessagePropertyAnnotations($value, $messageMetadata);
             $this->addPropertyConstraintsFromMessageAnnotations($value, $messageMetadata);
         }
@@ -56,9 +59,10 @@ class MessageHandlerMetadataFactory implements MetadataFactoryInterface
     }
 
     private function addPropertyConstraintsFromMessagePropertyAnnotations(
-        \Jimphle\Messaging\Message $value,
-        \Jimphle\Messaging\Plugin\Validation\MessageMetadata $messageMetadata
-    ) {
+        Message $value,
+        MessageMetadata $messageMetadata
+    )
+    {
         $annotations = $this->metadataProvider->get($value, self::MESSAGE_PROPERTY_ANNOTATION_CLASS);
         foreach ($annotations as $annotation) {
             $messageMetadata->addPropertyConstraint($annotation->prop, $annotation->constraint);
@@ -66,9 +70,10 @@ class MessageHandlerMetadataFactory implements MetadataFactoryInterface
     }
 
     private function addPropertyConstraintsFromMessageAnnotations(
-        \Jimphle\Messaging\Message $value,
-        \Jimphle\Messaging\Plugin\Validation\MessageMetadata $messageMetadata
-    ) {
+        Message $value,
+        MessageMetadata $messageMetadata
+    )
+    {
         $annotations = $this->metadataProvider->get($value, self::MESSAGE_ANNOTATION_CLASS);
         foreach ($annotations as $annotation) {
             $constraintDefinitions = $this->serviceContainer->offsetGet($annotation->name);

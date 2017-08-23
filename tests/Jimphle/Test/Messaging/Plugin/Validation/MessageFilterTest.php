@@ -132,7 +132,7 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
      */
     private function validatorMock()
     {
-        return $this->getMock('\Symfony\Component\Validator\ValidatorInterface');
+        return $this->getMock('\Symfony\Component\Validator\Validator\ValidatorInterface');
     }
 
     private function someMessage()
