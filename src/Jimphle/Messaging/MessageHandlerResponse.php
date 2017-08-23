@@ -3,7 +3,7 @@ namespace Jimphle\Messaging;
 
 use Jimphle\DataStructure\BaseInterface;
 use Jimphle\DataStructure\Map;
-use Jimphle\DataStructure\Null;
+use Jimphle\DataStructure\Nullable;
 use Jimphle\DataStructure\Vector;
 
 class MessageHandlerResponse implements Message
@@ -30,7 +30,7 @@ class MessageHandlerResponse implements Message
 
     public static function withoutPayload()
     {
-        return new static(new Null());
+        return new static(new Nullable());
     }
 
     public static function fromVector(array $payload)
