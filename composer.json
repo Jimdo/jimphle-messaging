@@ -12,7 +12,7 @@
         "phpunit/phpunit": "4.0.*",
         "mockery/mockery": "0.9.4",
         "symfony/validator": "@stable",
-        "doctrine/common": "@stable"
+        "doctrine/common": "2.7.3"
     },
     "suggest": {
         "pimple/pimple": "2.0.*@dev",
