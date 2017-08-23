@@ -3,8 +3,9 @@ namespace Jimphle\Messaging\Plugin\Validation;
 
 use Jimphle\Exception\ValidationFailedException;
 use Jimphle\Messaging\Filter;
+use Jimphle\Messaging\Message;
 use Symfony\Component\Validator\Exception\ValidatorException;
-use Symfony\Component\Validator\ValidatorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class MessageFilter implements Filter
 {
@@ -18,11 +19,11 @@ class MessageFilter implements Filter
     }
 
     /**
-     * @param \Jimphle\Messaging\Message $message
+     * @param Message $message
      * @throws ValidationFailedException
-     * @return \Jimphle\Messaging\Message
+     * @return Message
      */
-    public function filter(\Jimphle\Messaging\Message $message)
+    public function filter(Message $message)
     {
         try {
             $constraintViolations = $this->validator->validate($message);
