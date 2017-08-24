@@ -3,6 +3,7 @@ namespace Jimphle\Messaging\Plugin\Validation;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Mapping\PropertyMetadataInterface;
 
 class MessageMetadata extends ClassMetadata
 {
@@ -14,7 +15,7 @@ class MessageMetadata extends ClassMetadata
                 $property
             );
 
-            $property = $this->addProperty($property);
+            $this->addPropertyMetadata($this->properties[$property]);
         }
 
         $constraint->addImplicitGroupName($this->getDefaultGroup());
@@ -29,14 +30,13 @@ class MessageMetadata extends ClassMetadata
     }
 
     /**
-     * @see ClassMetadata::addPropertyMetadata()
-     * @param string $property
-     * @return string
+     * Adds a property metadata.
+     *
+     * @param PropertyMetadataInterface $metadata
      */
-    private function addProperty($property)
+    private function addPropertyMetadata(PropertyMetadataInterface $metadata)
     {
-        $property = $this->properties[$property]->getPropertyName();
-        $this->members[$property][] = $property;
-        return $property;
+        $property = $metadata->getPropertyName();
+        $this->members[$property][] = $metadata;
     }
 }

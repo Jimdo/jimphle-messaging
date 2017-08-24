@@ -13,6 +13,7 @@ class TokenContextTest extends \PHPUnit_Framework_TestCase
     const UNAUTHORIZED_WEBSITE_ID = 654321;
     const SOME_OTHER_INTERACTION = 'some-other-interaction';
     const CLIENT_ID = 'some-client';
+    const SCOPES = 'web';
 
     public $websiteIdExtractor;
 
@@ -216,7 +217,7 @@ class TokenContextTest extends \PHPUnit_Framework_TestCase
 
     private function websiteUserTokenJwtPayload()
     {
-        return array('w' => self::AUTHORIZED_WEBSITE_ID, 'aud' => self::CLIENT_ID);
+        return array('w' => self::AUTHORIZED_WEBSITE_ID, 'aud' => self::CLIENT_ID, 'scopes' => self::SCOPES);
     }
 
     private function websiteUserToken()
@@ -225,14 +226,15 @@ class TokenContextTest extends \PHPUnit_Framework_TestCase
             array(
                 'role' => TokenContext::WEBSITE_USER,
                 'websiteId' => self::AUTHORIZED_WEBSITE_ID,
-                'clientId' => self::CLIENT_ID
+                'clientId' => self::CLIENT_ID,
+                'scopes' => self::SCOPES,
             )
         );
     }
 
     private function superUserTokenJwtPayload()
     {
-        return array('aud' => self::CLIENT_ID);
+        return array('aud' => self::CLIENT_ID, 'scopes' => self::SCOPES);
     }
 
     private function superUserToken()
@@ -240,7 +242,8 @@ class TokenContextTest extends \PHPUnit_Framework_TestCase
         return new Map(
             array(
                 'role' => TokenContext::SUPER_USER,
-                'clientId' => self::CLIENT_ID
+                'clientId' => self::CLIENT_ID,
+                'scopes' => self::SCOPES,
             )
         );
     }
