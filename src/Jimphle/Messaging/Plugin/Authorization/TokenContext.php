@@ -53,6 +53,7 @@ class TokenContext implements \Jimphle\Messaging\Plugin\Authorization\Context
             $accessTokenPayload = new \Jimphle\DataStructure\Map(
                 $this->accessTokenExtractor->extractPayload($token)
             );
+            $scopes = isset($accessTokenPayload->scopes) ? $accessTokenPayload->scopes: [];
             if (isset($accessTokenPayload->w)) {
                 $this->setToken(
                     new \Jimphle\DataStructure\Map(
@@ -60,6 +61,7 @@ class TokenContext implements \Jimphle\Messaging\Plugin\Authorization\Context
                             'role' => self::WEBSITE_USER,
                             'websiteId' => $accessTokenPayload->w,
                             'clientId' => $accessTokenPayload->aud,
+                            'scopes' => $scopes,
                         )
                     )
                 );
@@ -69,6 +71,7 @@ class TokenContext implements \Jimphle\Messaging\Plugin\Authorization\Context
                         array(
                             'role' => self::SUPER_USER,
                             'clientId' => $accessTokenPayload->aud,
+                            'scopes' => $scopes,
                         )
                     )
                 );
