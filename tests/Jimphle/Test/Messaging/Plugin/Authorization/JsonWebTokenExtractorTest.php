@@ -1,9 +1,11 @@
 <?php
 namespace Jimphle\Test\Messaging\Plugin\Authorization;
 
+use Jimphle\Exception\InvalidArgumentException;
 use Jimphle\Messaging\Plugin\Authorization\JsonWebTokenExtractor;
+use PHPUnit\Framework\TestCase;
 
-class JsonWebTokenExtractorTest extends \PHPUnit_Framework_TestCase
+class JsonWebTokenExtractorTest extends TestCase
 {
     const SOME_ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjEzNzA5NTUyNjMsImV4cCI6MTM3MzU0NzI2MywiYXVkIjoiaW9zIiwidyI6OTAwMDkzODM1fQ.-78opnbSE6D57d-AdO5-IERAaEo6avMP-gSBaoenA3s';
 
@@ -12,7 +14,7 @@ class JsonWebTokenExtractorTest extends \PHPUnit_Framework_TestCase
      */
     private $extractor;
 
-    public function setUp()
+    public function setUp():void
     {
         $this->extractor = new JsonWebTokenExtractor();
     }
@@ -37,31 +39,31 @@ class JsonWebTokenExtractorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Missing token.
      */
     public function itShouldThrowAnExceptionIfAccessTokenIsMissing()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Missing token.');
         $this->extractor->extractPayload('');
     }
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Invalid data.
      */
     public function itShouldThrowAnExceptionIfAccessTokenIsInvalid()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid data.');
         $this->extractor->extractPayload('asdasd.asdasd.asdasd');
     }
 
     /**
      * @test
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Invalid token.
      */
     public function itShouldThrowAnExceptionIfAccessTokenLooksNotLikeAnJWT()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid token.');
         $this->extractor->extractPayload('asdasd.asdasd');
     }
 }

@@ -4,8 +4,10 @@ namespace Jimphle\Test\Messaging;
 use Jimphle\Messaging\GenericMessage;
 use Jimphle\Messaging\Message;
 use Jimphle\Messaging\MessageHandlerMetadataProvider;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
-class MessageHandlerMetadataProviderTest extends \PHPUnit_Framework_TestCase
+class MessageHandlerMetadataProviderTest extends TestCase
 {
     const SOME_ANNOTATION = 'Jimphle\Test\Messaging\SomeAnnotation';
     const SOME_MESSAGE_NAME = 'a_message';
@@ -13,23 +15,23 @@ class MessageHandlerMetadataProviderTest extends \PHPUnit_Framework_TestCase
     const UNKNOWN_ANNOTATION = 'Jimphle\Test\Messaging\UnknownAnnotation';
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $messageHandlerFake;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $reader;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $messageHandlerProvider;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->reader = $this->getMock('\Doctrine\Common\Annotations\Reader');
+        $this->reader = $this->createMock(\Doctrine\Common\Annotations\Reader::class);
         $this->messageHandlerFake = new MessageHandlerFake();
         $this->messageHandlerProvider = $this->messageHandlerProviderMock();
         $this->messageHandlerProvider->expects($this->any())
@@ -74,10 +76,10 @@ class MessageHandlerMetadataProviderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \RuntimeException
      */
     public function itShouldThrowAnExceptionIfUnknownAnnotationFound()
     {
+        $this->expectException(\RuntimeException::class);
         $annotations = array(
             new SomeAnnotation(),
             new UnknownAnnotation(),
@@ -92,10 +94,10 @@ class MessageHandlerMetadataProviderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \RuntimeException
      */
     public function itShouldThrowAnExceptionIfTryingToGetUnknownAnnotation()
     {
+        $this->expectException(\RuntimeException::class);
         $this->readAnnotations(self::UNKNOWN_ANNOTATION);
     }
 
@@ -180,7 +182,7 @@ class MessageHandlerMetadataProviderTest extends \PHPUnit_Framework_TestCase
     private function messageHandlerProviderMock()
     {
         return $this->getMockBuilder(
-            '\Jimphle\Messaging\MessageHandlerProvider'
+            \Jimphle\Messaging\MessageHandlerProvider::class
         )
             ->disableOriginalConstructor()
             ->getMock();

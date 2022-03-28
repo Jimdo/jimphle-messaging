@@ -3,18 +3,20 @@ namespace Jimphle\Test\Messaging\Plugin\Validation;
 
 use Jimphle\Messaging\Command;
 use Jimphle\Messaging\Plugin\Validation\MessagePropertyMetadata;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Validator\Exception\ValidatorException;
 
-class MessagePropertyMetadataTest extends \PHPUnit_Framework_TestCase
+class MessagePropertyMetadataTest extends TestCase
 {
     const MESSAGE_HANDLER_CLASS = '\Jimphle\Messaging\Command';
     const SOME_NAME = 'blub';
 
     /**
      * @test
-     * @expectedException \Symfony\Component\Validator\Exception\ValidatorException
      */
     public function itShouldThrowAnExceptionIfObjectIsOfWrongType()
     {
+        $this->expectException(ValidatorException::class);
         $this->getPropertyValue('\stdClass');
     }
 

@@ -3,8 +3,9 @@ namespace Jimphle\Test\Messaging;
 
 use Jimphle\Messaging\GenericMessage;
 use Jimphle\Messaging\MessageHandlerResponse;
+use PHPUnit\Framework\TestCase;
 
-class MessageHandlerResponseTest extends \PHPUnit_Framework_TestCase
+class MessageHandlerResponseTest extends TestCase
 {
     /**
      * @test

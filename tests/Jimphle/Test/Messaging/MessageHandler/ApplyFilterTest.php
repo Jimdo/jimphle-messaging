@@ -3,8 +3,9 @@ namespace Jimphle\Test\Messaging\MessageHandler;
 
 use Jimphle\Messaging\GenericMessage;
 use Jimphle\Messaging\MessageHandler\ApplyFilter;
+use PHPUnit\Framework\TestCase;
 
-class ApplyFilterTest extends \PHPUnit_Framework_TestCase
+class ApplyFilterTest extends TestCase
 {
     /**
      * @test
@@ -81,7 +82,7 @@ class ApplyFilterTest extends \PHPUnit_Framework_TestCase
 
     private function messageFilterMock()
     {
-        return $this->getMock('\Jimphle\Messaging\Filter');
+        return $this->createMock(\Jimphle\Messaging\Filter::class);
     }
 
     private function message()
@@ -91,6 +92,6 @@ class ApplyFilterTest extends \PHPUnit_Framework_TestCase
 
     private function messageHandlerMock()
     {
-        return $this->getMock('\Jimphle\Messaging\MessageHandler\MessageHandler');
+        return $this->createMock(\Jimphle\Messaging\MessageHandler\MessageHandler::class);
     }
 }

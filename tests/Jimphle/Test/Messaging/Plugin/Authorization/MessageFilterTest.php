@@ -4,29 +4,31 @@ namespace Jimphle\Test\Messaging\Plugin\Authorization;
 use Jimphle\Messaging\Command;
 use Jimphle\Messaging\Message;
 use Jimphle\Messaging\Plugin\Authorization\MessageFilter;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
-class MessageFilterTest extends \PHPUnit_Framework_TestCase
+class MessageFilterTest extends TestCase
 {
     const SOME_MESSAGE_HANDLER_NAME = 'vlaehfjkwehf';
     const SOME_AUTH_CONSTRAINT = 'some_auth_constraint';
     const SOME_OTHER_AUTH_CONSTRAINT = 'some_other_auth_constraint';
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $metadataProvider;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     public $serviceContainer;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     public $authorizationContext;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->loadMetaDataProvider();
         $this->loadServiceContainer();
@@ -131,7 +133,7 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
     private function loadMetaDataProvider()
     {
         $this->metadataProvider = $this->getMockBuilder(
-            '\Jimphle\Messaging\MessageHandlerMetadataProvider'
+            \Jimphle\Messaging\MessageHandlerMetadataProvider::class
         )
             ->disableOriginalConstructor()
             ->getMock();
@@ -153,21 +155,21 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
 
     private function loadServiceContainer()
     {
-        $this->serviceContainer = $this->getMock('ArrayAccess');
+        $this->serviceContainer = $this->createMock(\ArrayAccess::class);
     }
 
     private function authorizationConstraint()
     {
-        return $this->getMock('\Jimphle\Messaging\Plugin\Authorization\Constraint');
+        return $this->createMock(\Jimphle\Messaging\Plugin\Authorization\Constraint::class);
     }
 
     private function anotherAuthorizationConstraint()
     {
-        return $this->getMock('\Jimphle\Messaging\Plugin\Authorization\Constraint');
+        return $this->createMock(\Jimphle\Messaging\Plugin\Authorization\Constraint::class);
     }
 
     private function loadAuthorizationContext()
     {
-        $this->authorizationContext = $this->getMock('\Jimphle\Messaging\Plugin\Authorization\Context');
+        $this->authorizationContext = $this->createMock(\Jimphle\Messaging\Plugin\Authorization\Context::class);
     }
 }

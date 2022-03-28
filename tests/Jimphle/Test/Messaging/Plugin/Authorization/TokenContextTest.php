@@ -2,10 +2,15 @@
 namespace Jimphle\Test\Messaging\Plugin\Authorization;
 
 use Jimphle\DataStructure\Map;
+use Jimphle\Exception\AccessNotGrantedException;
+use Jimphle\Exception\InvalidAccessTokenException;
+use Jimphle\Exception\InvalidRequestException;
 use Jimphle\Messaging\GenericMessage;
 use Jimphle\Messaging\Plugin\Authorization\TokenContext;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
-class TokenContextTest extends \PHPUnit_Framework_TestCase
+class TokenContextTest extends TestCase
 {
     const SOME_INTERACTION = 'blaa_interaction';
     const SOME_ACCESS_TOKEN = 'some-token';
@@ -22,7 +27,7 @@ class TokenContextTest extends \PHPUnit_Framework_TestCase
      */
     private $authorizationContext;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->websiteIdExtractor = $this->accessTokenExtractorMock();
         $this->websiteIdExtractor->expects($this->any())
@@ -48,28 +53,28 @@ class TokenContextTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Jimphle\Exception\InvalidRequestException
      */
     public function itShouldNotGrantAccessIfNoAuthorizationIsSet()
     {
+        $this->expectException(InvalidRequestException::class);
         $this->authorizationContext->assertAccessIsGranted($this->validRequest());
     }
 
     /**
      * @test
-     * @expectedException \Jimphle\Exception\InvalidRequestException
      */
     public function itShouldNotGrantAccessIfAccessTokenIsEmpty()
     {
+        $this->expectException(InvalidRequestException::class);
         $this->authorizationContext->setJsonWebToken('');
     }
 
     /**
      * @test
-     * @expectedException \Jimphle\Exception\InvalidAccessTokenException
      */
     public function itShouldNotGrantAccessIfTokenDataCanNotBeExtracted()
     {
+        $this->expectException(InvalidAccessTokenException::class);
         $this->websiteIdExtractor = $this->accessTokenExtractorMock();
         $this->websiteIdExtractor->expects($this->once())
             ->method('extractPayload')
@@ -81,12 +86,12 @@ class TokenContextTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Jimphle\Exception\AccessNotGrantedException
-     * @expectedExceptionMessage my constraint failed
      */
     public function itShouldNotGrantAccessIfValidationOfTheGivenConstraintFails()
     {
-        $constraint = $this->getMock('\Jimphle\Messaging\Plugin\Authorization\Constraint');
+        $this->expectException(AccessNotGrantedException::class);
+        $this->expectExceptionMessage('my constraint failed');
+        $constraint = $this->createMock(\Jimphle\Messaging\Plugin\Authorization\Constraint::class);
         $constraint->expects($this->once())
             ->method('validate')
             ->with($this->equalTo($this->valueToValidate(new Map(), $this->websiteUserToken())))
@@ -106,12 +111,12 @@ class TokenContextTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldValidateAgainstTheConstraints()
     {
-        $constraint = $this->getMock('\Jimphle\Messaging\Plugin\Authorization\Constraint');
+        $constraint = $this->createMock(\Jimphle\Messaging\Plugin\Authorization\Constraint::class);
         $constraint->expects($this->once())
             ->method('validate')
             ->will($this->returnValue(true));
 
-        $otherConstraint = $this->getMock('\Jimphle\Messaging\Plugin\Authorization\Constraint');
+        $otherConstraint = $this->createMock(\Jimphle\Messaging\Plugin\Authorization\Constraint::class);
         $otherConstraint->expects($this->once())
             ->method('validate')
             ->will($this->returnValue(true));
@@ -130,7 +135,7 @@ class TokenContextTest extends \PHPUnit_Framework_TestCase
         $this->websiteIdExtractor->expects($this->any())
             ->method('extractPayload')
             ->will($this->returnValue($this->superUserTokenJwtPayload()));
-        $constraint = $this->getMock('\Jimphle\Messaging\Plugin\Authorization\Constraint');
+        $constraint = $this->createMock(\Jimphle\Messaging\Plugin\Authorization\Constraint::class);
         $constraint->expects($this->never())
             ->method('validate');
         $this->loadAuthorizationContextWithValidToken();
@@ -192,11 +197,11 @@ class TokenContextTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     private function accessTokenExtractorMock()
     {
-        return $this->getMock('\Jimphle\Messaging\Plugin\Authorization\JsonWebTokenExtractor');
+        return $this->createMock(\Jimphle\Messaging\Plugin\Authorization\JsonWebTokenExtractor::class);
     }
 
     private function invalidRequest()

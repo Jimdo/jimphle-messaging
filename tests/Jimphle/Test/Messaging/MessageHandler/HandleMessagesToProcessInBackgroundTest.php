@@ -7,22 +7,24 @@ use Jimphle\Messaging\Message;
 use Jimphle\Messaging\MessageHandler\HandleMessagesToProcessDirectly;
 use Jimphle\Messaging\MessageHandler\HandleMessagesToProcessInBackground;
 use Jimphle\Messaging\MessageHandlerResponse;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
-class HandleMessagesToProcessInBackgroundTest extends \PHPUnit_Framework_TestCase
+class HandleMessagesToProcessInBackgroundTest extends TestCase
 {
     const TEST_NAME = 'test_name';
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $directMessageHandlerMock;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $backgroundMessageHandlerMock;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->directMessageHandlerMock = $this->messageHandlerMock();
         $this->backgroundMessageHandlerMock = $this->messageHandlerMock();
@@ -113,7 +115,7 @@ class HandleMessagesToProcessInBackgroundTest extends \PHPUnit_Framework_TestCas
 
     private function messageHandlerMock()
     {
-        $messageHandler = $this->getMock('\Jimphle\Messaging\MessageHandler\MessageHandler');
+        $messageHandler = $this->createMock(\Jimphle\Messaging\MessageHandler\MessageHandler::class);
         return $messageHandler;
     }
 

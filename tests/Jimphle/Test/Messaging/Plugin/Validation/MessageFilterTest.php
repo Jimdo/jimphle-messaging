@@ -4,10 +4,12 @@ namespace Jimphle\Test\Messaging\Plugin\Validation;
 use Jimphle\Exception\ValidationFailedException;
 use Jimphle\Messaging\GenericMessage;
 use Jimphle\Messaging\Plugin\Validation\MessageFilter;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Component\Validator\ConstraintViolationList;
 
-class MessageFilterTest extends \PHPUnit_Framework_TestCase
+class MessageFilterTest extends TestCase
 {
     const SOME_PROPERTY = 'some_prop';
     const SOME_MESSAGE = 'sine blbfjkvhfdjsk';
@@ -18,11 +20,11 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
     private $constraintViolationCodeMap;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $validator;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->validator = $this->validatorMock();
         $this->validator->expects($this->any())
@@ -49,10 +51,10 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Jimphle\Exception\ValidationFailedException
      */
     public function itShouldThrowAnValidationExceptionIfValidationFails()
     {
+        $this->expectException(ValidationFailedException::class);
         $this->validator->expects($this->once())
             ->method('validate')
             ->with($this->equalTo($this->someMessage()))
@@ -128,11 +130,11 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     private function validatorMock()
     {
-        return $this->getMock('\Symfony\Component\Validator\Validator\ValidatorInterface');
+        return $this->createMock(\Symfony\Component\Validator\Validator\ValidatorInterface::class);
     }
 
     private function someMessage()
@@ -150,7 +152,7 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
 
     private function constraintViolationWithCode()
     {
-        $constraintViolation = $this->getMock('\Symfony\Component\Validator\ConstraintViolationInterface');
+        $constraintViolation = $this->createMock(\Symfony\Component\Validator\ConstraintViolationInterface::class);
         $constraintViolation->expects($this->any())->method('getPropertyPath')->will(
             $this->returnValue(self::SOME_PROPERTY)
         );
@@ -168,7 +170,7 @@ class MessageFilterTest extends \PHPUnit_Framework_TestCase
 
     private function constraintViolationWithoutCode()
     {
-        $constraintViolation = $this->getMock('\Symfony\Component\Validator\ConstraintViolationInterface');
+        $constraintViolation = $this->createMock(\Symfony\Component\Validator\ConstraintViolationInterface::class);
         $constraintViolation->expects($this->any())->method('getPropertyPath')->will(
             $this->returnValue(self::SOME_PROPERTY)
         );
