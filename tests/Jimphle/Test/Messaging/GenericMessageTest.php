@@ -4,8 +4,9 @@ namespace Jimphle\Test\Messaging;
 use Jimphle\Messaging\Command;
 use Jimphle\Messaging\Event;
 use Jimphle\Messaging\GenericMessage;
+use PHPUnit\Framework\TestCase;
 
-class GenericMessageTest extends \PHPUnit_Framework_TestCase
+class GenericMessageTest extends TestCase
 {
     /**
      * @test

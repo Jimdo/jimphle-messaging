@@ -4,33 +4,35 @@ namespace Jimphle\Test\Messaging\Plugin\Validation;
 use Jimphle\Messaging\Command;
 use Jimphle\Messaging\Plugin\Validation\MessageHandlerMetadataFactory;
 use Jimphle\Messaging\Plugin\Validation\MessageMetadata;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\Constraints\Type;
 
-class MessageHandlerMetadataFactoryTest extends \PHPUnit_Framework_TestCase
+class MessageHandlerMetadataFactoryTest extends TestCase
 {
     const SOME_COMMAND = 'some_command';
     const SOME_SERVICE_DEFINITION_ID = 'some.service_definition';
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $metadataProvider;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $serviceContainer;
 
-    public function setUp()
+    public function setUp():void
     {
         $this->metadataProvider = $this->getMockBuilder(
             '\Jimphle\Messaging\MessageHandlerMetadataProvider'
         )
             ->disableOriginalConstructor()
             ->getMock();
-        $this->serviceContainer = $this->getMock(
-            'ArrayAccess'
+        $this->serviceContainer = $this->createMock(
+            \ArrayAccess::class
         );
     }
 

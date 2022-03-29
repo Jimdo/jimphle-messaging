@@ -6,17 +6,19 @@ use Jimphle\Messaging\GenericMessage;
 use Jimphle\Messaging\Message;
 use Jimphle\Messaging\MessageHandler\HandleMessagesToProcessDirectly;
 use Jimphle\Messaging\MessageHandlerResponse;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
-class HandleMessagesToProcessDirectlyTest extends \PHPUnit_Framework_TestCase
+class HandleMessagesToProcessDirectlyTest extends TestCase
 {
     const TEST_NAME = 'test_name';
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $directMessageHandlerMock;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->directMessageHandlerMock = $this->messageHandlerMock();
     }
@@ -131,7 +133,7 @@ class HandleMessagesToProcessDirectlyTest extends \PHPUnit_Framework_TestCase
 
     private function messageHandlerMock()
     {
-        $messageHandler = $this->getMock('\Jimphle\Messaging\MessageHandler\MessageHandler');
+        $messageHandler = $this->createMock(\Jimphle\Messaging\MessageHandler\MessageHandler::class);
         return $messageHandler;
     }
 

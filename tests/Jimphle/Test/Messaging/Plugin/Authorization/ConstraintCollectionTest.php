@@ -3,8 +3,9 @@ namespace Jimphle\Test\Messaging\Plugin\Authorization;
 
 use Jimphle\DataStructure\Map;
 use Jimphle\Messaging\Plugin\Authorization\ConstraintCollection;
+use PHPUnit\Framework\TestCase;
 
-class ConstraintCollectionTest extends \PHPUnit_Framework_TestCase
+class ConstraintCollectionTest extends TestCase
 {
     const SOME_ERROR_MESSAGE = 'some bblaaaa';
 
@@ -27,11 +28,11 @@ class ConstraintCollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldStopValidationIfAConstraintFails()
     {
-        $constraintExpectedNeverToBeCalled = $this->getMock('\Jimphle\Messaging\Plugin\Authorization\Constraint');
+        $constraintExpectedNeverToBeCalled = $this->createMock(\Jimphle\Messaging\Plugin\Authorization\Constraint::class);
         $constraintExpectedNeverToBeCalled->expects($this->never())
             ->method('validate');
 
-        $invalidConstraint = $this->getMock('\Jimphle\Messaging\Plugin\Authorization\Constraint');
+        $invalidConstraint = $this->createMock(\Jimphle\Messaging\Plugin\Authorization\Constraint::class);
         $invalidConstraint->expects($this->once())
             ->method('validate')
             ->with($this->equalTo($this->someRequest()))
@@ -57,7 +58,7 @@ class ConstraintCollectionTest extends \PHPUnit_Framework_TestCase
 
     private function someValidConstraintMock()
     {
-        $constraint = $this->getMock('\Jimphle\Messaging\Plugin\Authorization\Constraint');
+        $constraint = $this->createMock(\Jimphle\Messaging\Plugin\Authorization\Constraint::class);
         $constraint->expects($this->once())
             ->method('validate')
             ->with($this->equalTo($this->someRequest()))

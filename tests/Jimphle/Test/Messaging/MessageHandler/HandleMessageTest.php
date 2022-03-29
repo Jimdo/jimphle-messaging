@@ -6,20 +6,22 @@ use Jimphle\Messaging\GenericMessage;
 use Jimphle\Messaging\Message;
 use Jimphle\Messaging\MessageHandler\HandleMessage;
 use Jimphle\Messaging\MessageHandlerResponse;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
-class HandleMessageTest extends \PHPUnit_Framework_TestCase
+class HandleMessageTest extends TestCase
 {
     const TEST_NAME = 'test_message';
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $messageHandlerProvider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->messageHandlerProvider = $this->getMockBuilder(
-            '\Jimphle\Messaging\MessageHandlerProvider'
+            \Jimphle\Messaging\MessageHandlerProvider::class
         )
             ->disableOriginalConstructor()
             ->getMock();
@@ -188,7 +190,7 @@ class HandleMessageTest extends \PHPUnit_Framework_TestCase
 
     private function messageHandlerMock()
     {
-        $messageHandler = $this->getMock('\Jimphle\Messaging\MessageHandler\MessageHandler');
+        $messageHandler = $this->createMock(\Jimphle\Messaging\MessageHandler\MessageHandler::class);
         return $messageHandler;
     }
 

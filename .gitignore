@@ -1,3 +1,4 @@
 /vendor/
 .idea
 jimphle-messaging.iml
+.phpunit.result.cache

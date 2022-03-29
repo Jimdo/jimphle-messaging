@@ -1,10 +1,12 @@
 <?php
 namespace Jimphle\Test\Messaging;
 
+use Jimphle\Exception\RuntimeException;
 use Jimphle\Messaging\GenericMessage;
 use Jimphle\Messaging\MessageHandlerProvider;
+use PHPUnit\Framework\TestCase;
 
-class MessageHandlerProviderTest extends \PHPUnit_Framework_TestCase
+class MessageHandlerProviderTest extends TestCase
 {
     const SOME_COMMAND_NAME = 'a_command';
     const SOME_EVENT_NAME = 'an_event';
@@ -20,7 +22,7 @@ class MessageHandlerProviderTest extends \PHPUnit_Framework_TestCase
      */
     private $messageHandlerProvider;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->serviceContainer = new \ArrayObject();
         $this->messageHandlerProvider = new MessageHandlerProvider(
@@ -33,7 +35,7 @@ class MessageHandlerProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldReturnAnInteractor()
     {
-        $messageHandler = $this->getMock('\Jimphle\Messaging\MessageHandler\MessageHandler');
+        $messageHandler = $this->createMock(\Jimphle\Messaging\MessageHandler\MessageHandler::class);
         $this->serviceContainer[self::SOME_COMMAND_NAME] = $messageHandler;
         $this->assertThat(
             $this->messageHandlerProvider->getCommandHandler(self::SOME_COMMAND_NAME),
@@ -46,7 +48,7 @@ class MessageHandlerProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldReturnACommandHandler()
     {
-        $messageHandler = $this->getMock('\Jimphle\Messaging\MessageHandler\MessageHandler');
+        $messageHandler = $this->createMock(\Jimphle\Messaging\MessageHandler\MessageHandler::class);
         $this->serviceContainer[self::SOME_COMMAND_NAME] = $messageHandler;
         $this->assertThat(
             $this->messageHandlerProvider->getCommandHandler(self::SOME_COMMAND_NAME),
@@ -56,30 +58,30 @@ class MessageHandlerProviderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Jimphle\Exception\RuntimeException
      */
     public function itShouldThrowAnExceptionIfCommandHandlerIsNotAValidMessageHandler()
     {
+        $this->expectException(RuntimeException::class);
         $this->serviceContainer[self::SOME_COMMAND_NAME] = new \stdClass;
         $this->messageHandlerProvider->getCommandHandler(self::SOME_COMMAND_NAME);
     }
 
     /**
      * @test
-     * @expectedException \Jimphle\Exception\RuntimeException
      */
     public function itShouldThrowAnExceptionIfEventHandlersAreNotAList()
     {
+        $this->expectException(RuntimeException::class);
         $this->serviceContainer[self::SOME_EVENT_NAME] = new \stdClass;
         $this->messageHandlerProvider->getEventHandlers(self::SOME_EVENT_NAME);
     }
 
     /**
      * @test
-     * @expectedException \Jimphle\Exception\RuntimeException
      */
     public function itShouldThrowAnExceptionIfEventHandlerIsNotAValidMessageHandler()
     {
+        $this->expectException(RuntimeException::class);
         $this->serviceContainer[self::SOME_EVENT_NAME] = array(new \stdClass);
         $this->messageHandlerProvider->getEventHandlers(self::SOME_EVENT_NAME);
     }
@@ -100,7 +102,7 @@ class MessageHandlerProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function itShouldReturnSomeEventHandlers()
     {
-        $messageHandler = $this->getMock('\Jimphle\Messaging\MessageHandler\MessageHandler');
+        $messageHandler = $this->createMock(\Jimphle\Messaging\MessageHandler\MessageHandler::class);
         $this->serviceContainer[self::SOME_EVENT_NAME] = array($messageHandler, $messageHandler);
         $this->assertThat(
             $this->messageHandlerProvider->getEventHandlers(self::SOME_EVENT_NAME),
@@ -110,10 +112,10 @@ class MessageHandlerProviderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \Jimphle\Exception\RuntimeException
      */
     public function itShouldThrowAnExceptionIfMessageTypeIsUndefined()
     {
+        $this->expectException(RuntimeException::class);
         $this->messageHandlerProvider->getMessageHandlers(
             GenericMessage::generate(self::SOME_MESSAGE_NAME)
         );

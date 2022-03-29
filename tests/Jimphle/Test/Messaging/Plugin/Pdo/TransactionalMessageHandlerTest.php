@@ -4,8 +4,9 @@ namespace Jimphle\Test\Messaging\Plugin\Pdo;
 use Mockery as m;
 use Jimphle\Messaging\GenericMessage;
 use Jimphle\Messaging\Plugin\Pdo\TransactionalMessageHandler;
+use PHPUnit\Framework\TestCase;
 
-class TransactionalMessageHandlerTest extends \PHPUnit_Framework_TestCase
+class TransactionalMessageHandlerTest extends TestCase
 {
     /**
      * @var \Mockery\MockInterface
@@ -22,12 +23,12 @@ class TransactionalMessageHandlerTest extends \PHPUnit_Framework_TestCase
      */
     private $nextHandler;
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         m::close();
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->metaDataProvider = m::mock('Jimphle\Messaging\MessageHandlerMetadataProvider');
         $this->transactionalExecutor = m::mock('\Jimphle\Messaging\Plugin\Pdo\TransactionalExecutor');

@@ -2,8 +2,9 @@
 namespace Jimphle\Test\Messaging\Plugin\Validation;
 
 use Jimphle\Messaging\Plugin\Validation\MessagePropertyAnnotation;
+use PHPUnit\Framework\TestCase;
 
-class ConstraintAnnotationTest extends \PHPUnit_Framework_TestCase
+class ConstraintAnnotationTest extends TestCase
 {
     /**
      * @test
